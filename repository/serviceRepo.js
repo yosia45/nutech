@@ -5,29 +5,21 @@ class ServiceRepo {
     try {
       let query = `SELECT s.id, s.code, s.name, s.icon, s.price FROM services s WHERE s.is_deduct = true`;
 
-      client.query(query, (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result.rows;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query);
+      return result.rows;
+    } catch (err) {
+      return err;
     }
   }
 
   static async findServiceByCode(code) {
     try {
-      let query = `SELECT s.code, s.name, s.icon, s.price FROM services s WHERE s.code = ?`;
+      let query = `SELECT s.id, s.code, s.name, s.icon, s.price FROM services s WHERE s.code = $1`;
 
-      client.query(query, [code], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result.rows;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [code]);
+      return result.rows[0];
+    } catch (err) {
+      return err;
     }
   }
 }

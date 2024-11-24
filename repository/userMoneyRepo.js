@@ -3,46 +3,34 @@ const client = require("../config/dbConnection");
 class UserMoneyRepo {
   static async findUserMoneyByUserID(userID) {
     try {
-      let query = `SELECT * FROM user_money WHERE user_id = ?`;
+      let query = `SELECT * FROM user_money WHERE user_id = $1`;
 
-      client.query(query, [userID], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result.rows[0];
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [userID]);
+      return result.rows[0];
+    } catch (err) {
+      return err;
     }
   }
 
   static async createUserMoney(userID) {
     try {
-      let query = `INSERT INTO user_money (user_id, balance) VALUES (?, 0)`;
+      let query = `INSERT INTO user_money (user_id, balance) VALUES ($1, 0)`;
 
-      client.query(query, [userID], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [userID]);
+      return result.rows[0];
+    } catch (err) {
+      return err;
     }
   }
 
   static async updateUserMoney(userBalance, userID) {
     try {
-      let query = `UPDATE user_money SET balance = ? WHERE user_id = ?`;
+      let query = `UPDATE user_money SET balance = $1 WHERE user_id = $2 RETURNING balance`;
 
-      client.query(query, [userBalance, userID], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [userBalance, userID]);
+      return result.rows[0];
+    } catch (err) {
+      return err;
     }
   }
 }

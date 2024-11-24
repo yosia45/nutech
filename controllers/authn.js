@@ -50,15 +50,21 @@ class UserController {
 
       const newPassword = generateHash(password);
 
-      let createdUser = await UserRepo.createUser({ email, newPassword });
+      let createdUser = await UserRepo.createUser({ email, password: newPassword });
+
+      console.log(createdUser);
+
+      if (createdUser.code === "23505") {
+        res.status(400).json(response(101, "Email sudah terdaftar", null));
+      }
 
       await UserProfileRepo.createUserProfile({
         first_name,
         last_name,
-        createdUser,
+        user_id: createdUser.id,
       });
 
-      await UserMoneyRepo.createUserMoney(createdUser);
+      await UserMoneyRepo.createUserMoney(createdUser.id);
 
       res
         .status(201)

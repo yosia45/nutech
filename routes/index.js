@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authn = require('../middleware/authn');
+const authn = require('../middlewares/authn');
 const UserControllers = require('../controllers/authn');
 const ServiceController = require('../controllers/service');
 const UserMoneyController = require('../controllers/userMoney');
@@ -11,9 +11,12 @@ const BannerController = require('../controllers/banner');
 router.post("/registration", UserControllers.register);
 router.post("/login", UserControllers.login);
 router.get("/profile", authn, UserProfileController.getUserProfile)
-router.put("/profile/update", authn, UserProfileController.updateUserProfile)
-router.get("/service", ServiceController.getAllServices)
+router.get("/services", ServiceController.getAllServices)
 router.get("/banner", BannerController.getBanner)
 router.get("/balance", authn, UserMoneyController.getUserMoney)
 router.post("/topup", authn, UserTransactionController.topUp)
 router.post("/transaction", authn, UserTransactionController.buyService)
+router.put("/profile/update", authn, UserProfileController.updateUserProfile)
+router.get("/transaction/history", authn, UserTransactionController.getAllTransaction)
+
+module.exports = router;

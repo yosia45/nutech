@@ -6,7 +6,7 @@ class UserTransactionRepo {
       let query = `SELECT ut.invoice_name, ut.amount, ut.created_at, s.is_deduct, s.description FROM user_transactions ut
                 LEFT JOIN services s ON ut.service_id = s.id
                 LEFT JOIN users u ON ut.user_id = u.id
-                WHERE ut.user_id = ? 
+                WHERE ut.user_id = $1 
                 ORDER BY ut.created_at DESC
                 `;
 
@@ -14,33 +14,28 @@ class UserTransactionRepo {
         query += `LIMIT ${limit} `;
       }
 
-      client.query(query, [id], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result.rows;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [id]);
+      return result.rows;
+    } catch (err) {
+      return err;
     }
   }
 
   static async createUserTransaction(userID, service_id, invoice_name, amount) {
     try {
-      let query = `INSERT INTO user_transactions (user_id, service_id, invoice_name, amount) VALUES (?, ?, ?, ?)`;
+      let query = `INSERT INTO user_transactions (user_id, service_id, invoice_name, amount) VALUES ($1, $2, $3, $4)`;
 
-      client.query(
-        query,
-        [userID, service_id, invoice_name, amount],
-        (err, result) => {
-          if (err) {
-            return err;
-          }
-          return result.rows;
-        }
-      );
-    } catch (error) {
-      return error;
+      const result = await client.query(query, [
+        userID,
+        service_id,
+        invoice_name,
+        amount,
+      ]);
+
+      return result;
+    } catch (err) {
+      console.log(err);
+      return err;
     }
   }
 }

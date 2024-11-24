@@ -1,4 +1,4 @@
-let createBannerTableQuery = `CREATE TABLE IF NOT EXISTS "banners" (
+const createBannerTableQuery = `CREATE TABLE IF NOT EXISTS "banners" (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
     "image" VARCHAR(255) NOT NULL,
@@ -7,3 +7,5 @@ let createBannerTableQuery = `CREATE TABLE IF NOT EXISTS "banners" (
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP
 );`
+
+module.exports = createBannerTableQuery

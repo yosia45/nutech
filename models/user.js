@@ -1,4 +1,4 @@
-let createUserTableQuery = `CREATE TABLE IF NOT EXISTS "users" (
+const createUserTableQuery = `CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL PRIMARY KEY,
     "email" VARCHAR(255) UNIQUE NOT NULL,
     "password" VARCHAR(255) NOT NULL,
@@ -6,3 +6,5 @@ let createUserTableQuery = `CREATE TABLE IF NOT EXISTS "users" (
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP
 );`
+
+module.exports = createUserTableQuery

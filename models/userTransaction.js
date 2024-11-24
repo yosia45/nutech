@@ -1,4 +1,4 @@
-let createUserTransactionTableQuery = `CREATE TABLE IF NOT EXISTS "user_transactions" (
+const createUserTransactionTableQuery = `CREATE TABLE IF NOT EXISTS "user_transactions" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INT NOT NULL,
     "service_id" INT NOT NULL,
@@ -10,3 +10,5 @@ let createUserTransactionTableQuery = `CREATE TABLE IF NOT EXISTS "user_transact
     FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
     FOREIGN KEY ("service_id") REFERENCES "services" ("id")
 );`
+
+module.exports = createUserTransactionTableQuery

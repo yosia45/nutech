@@ -14,7 +14,17 @@ class UserTransactionController {
         limit
       );
 
-      res.status(200).json(response(0, "Get History Berhasil", transactions));
+      const responseTransactions = transactions.map((transaction) => {
+        return {
+          invoice_number: transaction.invoice_name,
+          transaction_type: transaction.is_deduct ? "PAYMENT" : "TOPUP",
+          description: transaction.description,
+          total_amount: transaction.amount,
+          created_at: transaction.created_at,
+        };
+      });
+
+      res.status(200).json(response(0, "Get History Berhasil", responseTransactions));
     } catch (err) {
       next(err);
     }
@@ -51,14 +61,14 @@ class UserTransactionController {
 
       const foundService = await ServiceRepo.findServiceByCode("TOPUP");
 
-      const newBalance = foundUser.balance + top_up_amount;
+      const newBalance = +foundUser.balance + +top_up_amount;
 
       await UserMoneyRepo.updateUserMoney(newBalance, id);
 
       await UserTransactionRepo.createUserTransaction(
         id,
-        foundService.id,
-        invoiceNameGenerator(foundService.code, id),
+        foundService[0].id,
+        invoiceNameGenerator(foundService[0].code, id),
         top_up_amount
       );
 
@@ -89,19 +99,19 @@ class UserTransactionController {
 
       const foundUserMoney = await UserMoneyRepo.findUserMoneyByUserID(id);
 
-      if (foundUserMoney.balance < foundService.price) {
+      if (+foundUserMoney.balance < +foundService.price) {
         res
           .status(200)
           .json(
             response(
               200,
-              `Balance tidak mencukupi untuk membeli service ${foundService.name}`,
+              `Balance tidak mencukupi untuk membeli service ${foundService.code}`,
               null
             )
           );
       }
 
-      const newBalance = foundUserMoney.balance - foundService.price;
+      const newBalance = +foundUserMoney.balance - +foundService.price;
 
       await UserMoneyRepo.updateUserMoney(newBalance, id);
 

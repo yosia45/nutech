@@ -1,4 +1,4 @@
-let createUserMoneyTableQuery = `CREATE TABLE IF NOT EXISTS "user_money" (
+const createUserMoneyTableQuery = `CREATE TABLE IF NOT EXISTS "user_money" (
     "id" SERIAL PRIMARY KEY,
     "user_id" INT NOT NULL,
     "balance" DECIMAL(10, 2) NOT NULL,
@@ -7,3 +7,5 @@ let createUserMoneyTableQuery = `CREATE TABLE IF NOT EXISTS "user_money" (
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );`
+
+module.exports = createUserMoneyTableQuery

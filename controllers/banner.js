@@ -1,4 +1,4 @@
-const { response } = require("express")
+const response = require("../utils/response")
 const BannerRepo = require("../repository/bannerRepo")
 
 class BannerController {

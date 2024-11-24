@@ -1,7 +1,10 @@
 const { Client } = require("pg");
-const dotenv = require("dotenv");
-
-dotenv.config();
+const createUserTableQuery = require("../models/user");
+const createBannerTableQuery = require("../models/banner");
+const createServiceTableQuery = require("../models/service");
+const createUserProfileTableQuery = require("../models/userProfile");
+const createUserMoneyTableQuery = require("../models/userMoney");
+const createUserTransactionTableQuery = require("../models/userTransaction");
 
 const client = new Client({
   host: process.env.DB_HOST,
@@ -11,6 +14,28 @@ const client = new Client({
   database: process.env.DB_NAME,
 });
 
-client.connect();
+const autoMigrate = async () => {
+  const queries =  [
+    createUserTableQuery,
+    createBannerTableQuery,
+    createServiceTableQuery,
+    createUserProfileTableQuery,
+    createUserMoneyTableQuery,
+    createUserTransactionTableQuery
+  ]
+  try {
+    for (const query of queries) {
+      await client.query(query);
+    }
+    console.log("All migrations completed successfully.");
+  } catch (error) {
+    console.error("Migration failed:", error);
+  }
+};
+
+client.connect().then(() => {
+  console.log("Database connected.");
+  autoMigrate();
+});
 
 module.exports = client;

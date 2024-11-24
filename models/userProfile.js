@@ -1,4 +1,4 @@
-let createUserProfileTableQuery = `CREATE TABLE IF NOT EXISTS "user_profiles" (
+const createUserProfileTableQuery = `CREATE TABLE IF NOT EXISTS "user_profiles" (
     "id" SERIAL PRIMARY KEY,
     "first_name" VARCHAR(255) NOT NULL,
     "last_name" VARCHAR(255) NOT NULL,
@@ -9,3 +9,5 @@ let createUserProfileTableQuery = `CREATE TABLE IF NOT EXISTS "user_profiles" (
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );`
+
+module.exports = createUserProfileTableQuery

@@ -18,7 +18,7 @@ class UserProfileController {
       }
 
       res.status(200).json(
-        response(0, Sukses, {
+        response(0, "Sukses", {
           email: foundUser.email,
           first_name: foundUser.first_name,
           last_name: foundUser.last_name,
@@ -59,6 +59,21 @@ class UserProfileController {
       next(err);
     }
   }
+
+  // static async updateUserProfileImage(req, res, next) {
+  //   try {
+  //     let arr = []
+  //     req.files.map((file)=>{
+  //       let obj = {
+  //         imgUrl: file.path,
+          
+  //       }
+  //     })
+  //   } catch (err) {
+  //     next(err);
+      
+  //   }
+  // }
 }
 
 module.exports = UserProfileController

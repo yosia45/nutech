@@ -5,14 +5,10 @@ class BannerRepo {
     try {
       let query = `SELECT b.name, b.image, b.description FROM banners b`;
 
-      client.query(query, (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result.rows;
-      });
-    } catch (error) {
-      return error;
+      const result = await client.query(query);
+      return result.rows;
+    } catch (err) {
+      return err;
     }
   }
 }

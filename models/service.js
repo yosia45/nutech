@@ -1,4 +1,4 @@
-let createServiceTableQuery = `CREATE TABLE IF NOT EXISTS "services" (
+const createServiceTableQuery = `CREATE TABLE IF NOT EXISTS "services" (
     "id" SERIAL PRIMARY KEY,
     "code" VARCHAR(255) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
@@ -10,3 +10,5 @@ let createServiceTableQuery = `CREATE TABLE IF NOT EXISTS "services" (
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP
 );`
+
+module.exports = createServiceTableQuery
