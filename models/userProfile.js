@@ -3,6 +3,7 @@ const createUserProfileTableQuery = `CREATE TABLE IF NOT EXISTS "user_profiles" 
     "first_name" VARCHAR(255) NOT NULL,
     "last_name" VARCHAR(255) NOT NULL,
     "profile_image" VARCHAR(255),
+    "image/path" VARCHAR(255),
     "user_id" INT NOT NULL,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

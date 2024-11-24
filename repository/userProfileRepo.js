@@ -32,16 +32,12 @@ class UserProfileRepo {
     }
   }
 
-  static async updateUserProfileImage(userProfile, id) {
+  static async updateUserProfileImage(fileName, id) {
     try {
-      let query = `UPDATE user_profiles SET profile_image = $1 WHERE user_id = $2`;
+      let query = `UPDATE user_profiles SET profile_image = $1 WHERE user_id = $2 RETURNING *`;
 
-      client.query(query, [userProfile.profile_image, id], (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result;
-      });
+      const result = await client.query(query, [fileName, id]);
+      return result.rows[0];
     } catch (err) {
       return err;
     }

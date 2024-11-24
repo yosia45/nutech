@@ -60,20 +60,17 @@ class UserProfileController {
     }
   }
 
-  // static async updateUserProfileImage(req, res, next) {
-  //   try {
-  //     let arr = []
-  //     req.files.map((file)=>{
-  //       let obj = {
-  //         imgUrl: file.path,
-          
-  //       }
-  //     })
-  //   } catch (err) {
-  //     next(err);
-      
-  //   }
-  // }
+  static async updateUserProfileImage(req, res, next) {
+    try {
+      const image = req.file;
+
+      await UserProfileRepo.updateUserProfileImage(image.filename, req.user.id);
+
+      res.status(200).json(response(0, "Update Profile Image berhasil", null));
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
-module.exports = UserProfileController
+module.exports = UserProfileController;
