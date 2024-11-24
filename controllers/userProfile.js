@@ -1,6 +1,8 @@
 const UserProfileRepo = require("../repository/userProfileRepo");
 const UserRepo = require("../repository/userRepo");
 const response = require("../utils/response");
+const fs = require('fs');
+const path = require('path');
 
 class UserProfileController {
   static async getUserProfile(req, res, next) {
@@ -57,6 +59,15 @@ class UserProfileController {
       const image = req.file;
 
       const foundUser = await UserRepo.findUserByID(req.user.id);
+
+      const oldImage = foundUser.profile_image;
+
+      if (oldImage) {
+        const oldImagePath = path.join(__dirname, '../assets', oldImage);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
 
       const updatedProfile = await UserProfileRepo.updateUserProfileImage(
         image.filename,
