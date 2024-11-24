@@ -13,49 +13,38 @@ class UserController {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!email) {
-        res
-          .status(400)
-          .json(response(102, "Parameter email harus di isi", null));
+        throw { name: "EmailRequired" };
       }
 
       if (!emailRegex.test(email)) {
-        res
-          .status(400)
-          .json(response(102, "Paramter email tidak sesuai format", null));
+        throw { name: "InvalidEmailFormat" };
       }
 
       if (!password) {
-        res
-          .status(400)
-          .json(response(102, "Parameter password harus di isi", null));
+        throw { name: "PasswordRequired" };
       }
 
       if (password.length < 8) {
-        res
-          .status(400)
-          .json(response(102, "Password length minimal 8 karakter", null));
+        throw { name: "InvalidPasswordLength" };
       }
 
       if (!first_name) {
-        res
-          .status(400)
-          .json(response(102, "Parameter first_name harus di isi", null));
+        throw { name: "FirstNameRequired" };
       }
 
       if (!last_name) {
-        res
-          .status(400)
-          .json(response(102, "Parameter last_name harus di isi", null));
+        throw { name: "LastNameRequired" };
       }
 
       const newPassword = generateHash(password);
 
-      let createdUser = await UserRepo.createUser({ email, password: newPassword });
-
-      console.log(createdUser);
+      let createdUser = await UserRepo.createUser({
+        email,
+        password: newPassword,
+      });
 
       if (createdUser.code === "23505") {
-        res.status(400).json(response(101, "Email sudah terdaftar", null));
+        throw { name: "EmailAlreadyExist" };
       }
 
       await UserProfileRepo.createUserProfile({
@@ -81,37 +70,27 @@ class UserController {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!email) {
-        res
-          .status(400)
-          .json(response(102, "Parameter email harus di isi", null));
+        throw { name: "EmailRequired" };
       }
 
       if (!emailRegex.test(email)) {
-        res
-          .status(400)
-          .json(response(102, "Paramter email tidak sesuai format", null));
+        throw { name: "InvalidEmailFormat" };
       }
 
       if (!password) {
-        res
-          .status(400)
-          .json(response(102, "Parameter password harus di isi", null));
+        throw { name: "PasswordRequired" };
       }
 
       const foundUser = await UserRepo.findUserByEmail(email);
 
       if (!foundUser) {
-        res
-          .status(404)
-          .json(response(103, "Username atau password salah", null));
+        throw { name: "InvalidPaswordEmail" };
       }
 
       const isPasswordMatch = verifyHash(password, foundUser.password);
 
       if (!isPasswordMatch) {
-        res
-          .status(404)
-          .json(response(103, "Username atau password salah", null));
+        throw { name: "InvalidPaswordEmail" };
       }
 
       const payload = {

@@ -10,11 +10,7 @@ class UserProfileController {
       const foundUser = await UserRepo.findUserByID(id);
 
       if (!foundUser) {
-        res
-          .status(404)
-          .json(
-            response(108, "Token tidak tidak valid atau kadaluwarsa", null)
-          );
+        throw { name: "InvalidToken" };
       }
 
       res.status(200).json(
@@ -38,11 +34,7 @@ class UserProfileController {
       const foundUser = await UserRepo.findUserByID(id);
 
       if (!foundUser) {
-        res
-          .status(404)
-          .json(
-            response(108, "Token tidak tidak valid atau kadaluwarsa", null)
-          );
+        throw { name: "InvalidToken" };
       }
 
       await UserProfileRepo.updateUserProfile({ first_name, last_name }, id);
@@ -64,9 +56,21 @@ class UserProfileController {
     try {
       const image = req.file;
 
-      await UserProfileRepo.updateUserProfileImage(image.filename, req.user.id);
+      const foundUser = await UserRepo.findUserByID(req.user.id);
 
-      res.status(200).json(response(0, "Update Profile Image berhasil", null));
+      const updatedProfile = await UserProfileRepo.updateUserProfileImage(
+        image.filename,
+        req.user.id
+      );
+
+      res.status(200).json(
+        response(0, "Update Profile Image berhasil", {
+          email: foundUser.email,
+          first_name: updatedProfile.first_name,
+          last_name: updatedProfile.last_name,
+          profile_image: updatedProfile.profile_image,
+        })
+      );
     } catch (err) {
       next(err);
     }

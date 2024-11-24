@@ -14,6 +14,10 @@ class UserTransactionController {
         limit
       );
 
+      if (transactions.message) {
+        res.status(500).json(response(500, transactions.message, null));
+      }
+
       const responseTransactions = transactions.map((transaction) => {
         return {
           invoice_number: transaction.invoice_name,
@@ -24,7 +28,9 @@ class UserTransactionController {
         };
       });
 
-      res.status(200).json(response(0, "Get History Berhasil", responseTransactions));
+      res
+        .status(200)
+        .json(response(0, "Get History Berhasil", responseTransactions));
     } catch (err) {
       next(err);
     }
@@ -36,21 +42,11 @@ class UserTransactionController {
       const { id } = req.user;
 
       if (!top_up_amount) {
-        res
-          .status(400)
-          .json(response(108, "Parameter top_up_amount harus di isi", null));
+        throw { name: "TopUpAmountRequired" };
       }
 
       if (top_up_amount < 0) {
-        res
-          .status(400)
-          .json(
-            response(
-              102,
-              "Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0",
-              null
-            )
-          );
+        throw { name: "InvalidTopUpAmount" };
       }
 
       const foundUser = await UserMoneyRepo.findUserMoneyByUserID(id);
@@ -86,9 +82,7 @@ class UserTransactionController {
       const { id } = req.user;
 
       if (!service_code) {
-        res
-          .status(400)
-          .json(response(108, "Parameter service_code harus di isi", null));
+        throw { name: "ServiceCodeRequired" };
       }
 
       const foundService = await ServiceRepo.findServiceByCode(service_code);
@@ -122,17 +116,15 @@ class UserTransactionController {
         foundService.price
       );
 
-      res
-        .status(200)
-        .json(
-          response(0, "Transaksi berhasil", { 
-            invoice_number: invoiceNameGenerator(foundService.code, id),
-            service_code: foundService.code,
-            service_name: foundService.name,
-            transaction_type: "PAYMENT",
-            total_amount: foundService.price,
-           })
-        );
+      res.status(200).json(
+        response(0, "Transaksi berhasil", {
+          invoice_number: invoiceNameGenerator(foundService.code, id),
+          service_code: foundService.code,
+          service_name: foundService.name,
+          transaction_type: "PAYMENT",
+          total_amount: foundService.price,
+        })
+      );
     } catch (err) {
       next(err);
     }
